@@ -43,3 +43,23 @@ A. Because the request is valid but the requested resource does not exist.
 
 Q. When would 410 be more accurate?
 A. When the resource previously existed but has been permanently deleted and will not return.
+
+#### PATCH vs PUT
+
+PATCH performs partial updates and never removes unspecified fields.
+PUT replaces the entire resource.
+
+Q. Why does PATCH exist?
+A. To allow partial updates to a resource without requiring the client to send the full representation.
+
+Q. Why is an empty PATCH invalid?
+A. Because PATCH must describe at least one change; an empty request has no semantic meaning.
+
+Q. How does PATCH differ from PUT?
+A. PUT replaces the entire resource, while PATCH updates only the specified fields and leaves others unchanged.
+
+Q. Why does PATCH return 200?
+A. Because the request succeeded and the server returns the updated resource; 204 is allowed but omits the body.
+
+Q. How can PATCH cause data loss if done wrong?
+A. If implemented like PUT, unspecified fields may be overwritten or removed, causing accidental data loss.
