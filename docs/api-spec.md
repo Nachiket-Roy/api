@@ -26,10 +26,6 @@ A. Because HTTP recommends that when a resource is created, the server should re
 Q. Can PUT return 201? When?
 A. Yes. PUT returns 201 when the target resource did not previously exist and the request resulted in creating it at the specified URI.
 
-| Code |          Meaning                            |
-| 404  | Resource does not exist (or never existed)  |
-| 410  | Resource existed but is permanently deleted |
-
 Idempotent means: performing the same request multiple times results in the same state as performing it once.
 
 Q. Why is GET safe?
@@ -38,7 +34,7 @@ A. Because it does not modify server state; it only retrieves data.
 Q. Why is GET idempotent?
 A. Because multiple identical GET requests result in the same server state as a single request.
 
-Q. Why is 404 correct here?
+Q. Why 404?
 A. Because the request is valid but the requested resource does not exist.
 
 Q. When would 410 be more accurate?
