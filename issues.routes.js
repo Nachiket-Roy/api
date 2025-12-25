@@ -90,6 +90,83 @@ async function issueRoutes(fastify, options) {
 
         return issue
     })
+    // fastify.get("/issues", {
+    //     schema: {
+    //         querystring: {
+    //             type: "object",
+    //             properties: {
+    //                 limit: { type: "integer", minimum: 1, maximum: 50, default: 10 },
+    //                 offset: { type: "integer", minimum: 0, default: 0 }
+    //             }
+    //         }
+    //     }
+    // }, async (request) => {
+    //     const { limit, offset } = request.query
+
+    //     const allIssues = Array.from(issues.values())
+
+    //     // imp : enforce ordering
+    //     allIssues.sort((a, b) => a.created_at.localeCompare(b.created_at))
+
+    //     return {
+    //         items: allIssues.slice(offset, offset + limit),
+    //         limit,
+    //         offset,
+    //         total: allIssues.length
+    //     }
+    // })
+    // Offset pagination only breaks when:
+
+    // Data is inserted/deleted
+
+    // AND it affects rows before the offset
+
+    // AND clients paginate across multiple requests
+
+    // Your current flow:
+
+    // Always appends newer items
+
+    // Never changes earlier rows
+
+    // Therefore offset stays stable
+
+    // This is why offset pagination survives demos and fails in production.
+    fastify.get("/issues", {
+        schema: {
+            querystring: {
+                type: "object",
+                properties: {
+                    limit: { type: "integer", minimum: 1, maximum: 50, default: 10 },
+                    cursor: { type: "string" }
+                }
+            }
+        }
+    }, async (request) => {
+        const { limit, cursor } = request.query
+
+        let allIssues = Array.from(issues.values())
+
+        allIssues.sort((a, b) => a.created_at.localeCompare(b.created_at))
+
+        if (cursor) {
+            allIssues = allIssues.filter(
+                issue => issue.created_at > cursor
+            )
+        }
+
+        const items = allIssues.slice(0, limit)
+
+        const nextCursor =
+            items.length === limit
+                ? items[items.length - 1].created_at
+                : null
+
+        return {
+            items,
+            nextCursor
+        }
+    })
 
 }
 

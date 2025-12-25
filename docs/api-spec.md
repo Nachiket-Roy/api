@@ -59,3 +59,18 @@ A. Because the request succeeded and the server returns the updated resource; 20
 
 Q. How can PATCH cause data loss if done wrong?
 A. If implemented like PUT, unspecified fields may be overwritten or removed, causing accidental data loss.
+
+Q. Why does offset pagination break?
+A. Because it relies on fixed positions, and inserts or deletions shift those positions, causing duplicates or missing items.
+
+Q. Why is cursor pagination stable?
+A. Because it uses a data-based continuation point rather than positions, so changes to the dataset do not affect previously paginated results.
+
+Q. What trade-offs does cursor pagination have?
+A. It prevents easy random access to pages and requires a stable ordering key, but provides consistent results.
+
+Q. When is offset pagination acceptable?
+A. For small or mostly static datasets such as admin dashboards or internal tools.
+
+Q. Why must ordering be explicit?
+A. Because without explicit ordering, result sets are nondeterministic, making pagination unreliable.
